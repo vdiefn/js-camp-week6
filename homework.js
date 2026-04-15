@@ -43,7 +43,8 @@ async function getCart() {
       `${BASE_URL}/api/livejs/v1/customer/${API_PATH}/carts`,
     );
     const data = await response.json();
-    return data;
+    const { carts, total, finalTotal } = data;
+    return { carts, total, finalTotal };
   } catch (error) {
     console.err(error);
   }
@@ -59,17 +60,16 @@ async function getProductsSafe() {
       `${BASE_URL}/api/livejs/v1/customer/${API_PATH}/products`,
     );
     const data = await response.json();
-    if (response.ok) {
-      return {
-        success: true,
-        data: data.products,
-      };
-    } else {
+    if (!response.ok) {
       return {
         success: false,
         error: data.message,
       };
     }
+    return {
+      success: true,
+      data: data.products,
+    };
   } catch (error) {
     return {
       success: false,
@@ -111,10 +111,14 @@ async function addToCart(productId, quantity) {
         },
       },
     );
-    if (response.ok) {
-      const data = await response.json();
-      return data;
+    const data = await response.json();
+    if (!response.ok) {
+      return {
+        succrss: false,
+        error: data.message,
+      };
     }
+    return data;
   } catch (error) {
     console.error(error);
   }
@@ -147,10 +151,14 @@ async function updateCartItem(cartId, quantity) {
         },
       },
     );
-    if (response.ok) {
-      const data = await response.json();
-      return data;
+    const data = await response.json();
+    if (!response.ok) {
+      return {
+        success: false,
+        error: data.message,
+      };
     }
+    return data;
   } catch (error) {
     console.error(error);
   }
@@ -171,10 +179,14 @@ async function removeCartItem(cartId) {
         method: "DELETE",
       },
     );
-    if (response.ok) {
-      const data = await response.json();
-      return data;
+    const data = await response.json();
+    if (!response.ok) {
+      return {
+        success: false,
+        error: data.message,
+      };
     }
+    return data;
   } catch (error) {
     console.error(error);
   }
@@ -194,10 +206,14 @@ async function clearCart() {
         method: "DELETE",
       },
     );
-    if (response.ok) {
-      const data = response.json();
-      return data;
+    const data = response.json();
+    if (!response.ok) {
+      return {
+        success: false,
+        error: data.message,
+      };
     }
+    return data;
   } catch (error) {
     console.error(error);
   }
@@ -211,29 +227,29 @@ async function clearCart() {
 請回答以下問題（可以寫在這裡或另外繳交）：
 
 1. HTTP 狀態碼的分類（1xx, 2xx, 3xx, 4xx, 5xx 各代表什麼）
-   答：
-   1XX: 代表資訊回應
-   2XX: 代表成功
-   3XX: 代表重新導向
-   4XX: 代表使用者端的錯誤
-   5XX: 代表伺服器端的錯誤
+  答：
+  1XX: 代表資訊回應
+  2XX: 代表成功
+  3XX: 代表重新導向
+  4XX: 代表使用者端的錯誤
+  5XX: 代表伺服器端的錯誤
 
 2. GET、POST、PATCH、PUT、DELETE 的差異
-   答：
-   GET: 取得資料
-   POST: 新增資料
-   PATCH: 局部資料更新
-   PUT: 全部資料更新
-   DELETE: 資料刪除
+  答：
+  GET: 取得資料
+  POST: 新增資料
+  PATCH: 局部資料更新
+  PUT: 全部資料更新
+  DELETE: 資料刪除
 
 3. 什麼是 RESTful API？
-   答：
-   RESTful API 代表的是一種api的style，而不是一種標準。主要是透過HTTP的動詞(GET、POST、PATCH、PUT、DELETE)進行資料的CRUD操作，舉例來說：
-   新增一筆todo: POST /todos
-   取得todo資料: GET /todos
-   修改某筆todo的部分資料: PATCH /todos/:id
-   修改某筆todo的資料: PUT /todos/:id
-   刪除某筆todo的資料: DELETE /todos/:id
+  答：
+  RESTful API 代表的是一種api的style，而不是一種標準。主要是透過HTTP的動詞(GET、POST、PATCH、PUT、DELETE)進行資料的CRUD操作，舉例來說：
+  新增一筆todo: POST /todos
+  取得todo資料: GET /todos
+  修改某筆todo的部分資料: PATCH /todos/:id
+  修改某筆todo的資料: PUT /todos/:id
+  刪除某筆todo的資料: DELETE /todos/:id
 */
 
 // ========================================
